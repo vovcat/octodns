@@ -4,7 +4,7 @@
 
 from fqdn import FQDN
 
-from ..idna import idna_encode
+from ..idna import idna_encode, idna_decode
 
 
 class _TargetValue(str):
@@ -41,6 +41,8 @@ class _TargetValue(str):
     def rdata_text(self):
         return self
 
+    def __repr__(self):
+        return f'<{self.__class__.__name__} {idna_decode(self)}>'
 
 #
 # much like _TargetValue, but geared towards multiple values
@@ -57,9 +59,7 @@ class _TargetsValue(str):
         for value in data:
             value = idna_encode(value)
             if not FQDN(value, allow_underscores=True).is_valid:
-                reasons.append(
-                    f'Invalid {_type} value "{value}" is not a valid FQDN.'
-                )
+                reasons.append(f'Invalid {_type} value "{value}" is not a valid FQDN.')
             elif not value.endswith('.'):
                 reasons.append(f'{_type} value "{value}" missing trailing .')
         return reasons
