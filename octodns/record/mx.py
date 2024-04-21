@@ -27,6 +27,8 @@ class MxValue(EqualityTupleMixin, dict):
     @classmethod
     def validate(cls, data, _type):
         reasons = []
+        if not data:
+            reasons.append('empty MX record')
         for value in data:
             try:
                 try:
