@@ -50,6 +50,7 @@ class BaseProvider(BaseSource):
           that are made to have them logged or throw errors depending on the
           provider configuration.
         '''
+        self.log.debug(f'_process_desired_zone: desired={desired}')
 
         for record in desired.records:
             if not self.supports(record):
@@ -186,6 +187,7 @@ class BaseProvider(BaseSource):
           that are made to have them logged or throw errors depending on the
           provider configuration.
         '''
+        self.log.debug(f'_process_existing_zone: existing={existing}, desired={desired}')
 
         existing_root_ns = existing.root_ns
         if existing_root_ns and (
@@ -204,6 +206,7 @@ class BaseProvider(BaseSource):
         An opportunity for providers to filter out false positives due to
         peculiarities in their implementation. E.g. minimum TTLs.
         '''
+        self.log.debug(f'_include_change: change={change}')
         return True
 
     def _extra_changes(self, existing, desired, changes):
@@ -212,6 +215,7 @@ class BaseProvider(BaseSource):
         necessary to update ancillary record data or configure the zone. E.g.
         base NS records.
         '''
+        self.log.debug(f'_extra_changes: existing={existing}, desired={desired} changes={changes}')
         return []
 
     def supports_warn_or_except(self, msg, fallback):
@@ -278,7 +282,7 @@ class BaseProvider(BaseSource):
                 self.update_pcent_threshold,
                 self.delete_pcent_threshold,
             )
-            self.log.info('plan:   %s', plan)
+            self.log.info('plan:   %s (exists=%s)', plan, exists)
             return plan
         self.log.info('plan:   No changes')
         return None
@@ -288,6 +292,8 @@ class BaseProvider(BaseSource):
         Submits actual planned changes to the provider. Returns the number of
         changes made
         '''
+        self.log.debug(f'apply: plan={plan}')
+
         if self.apply_disabled:
             self.log.info('apply: disabled')
             return 0
