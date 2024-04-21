@@ -273,7 +273,7 @@ class BaseProvider(BaseSource):
             )
             changes += extra
 
-        if changes:
+        if changes or not exists:
             plan = Plan(
                 existing,
                 desired,
