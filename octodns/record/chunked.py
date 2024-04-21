@@ -60,6 +60,9 @@ class _ChunkedValue(str):
             data = (data,)
         reasons = []
         for value in data:
+            if value is None:
+                reasons.append(f'invalid value "{value}"')
+                continue
             if cls._unescaped_semicolon_re.search(value):
                 reasons.append(f'unescaped ; in "{value}"')
             try:
