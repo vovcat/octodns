@@ -169,6 +169,7 @@ class Record(EqualityTupleMixin):
         self.ttl = int(data['ttl'])
 
         self.octodns = data.get('octodns', {})
+        self.values = ''
 
     @property
     def _octodns(self):
