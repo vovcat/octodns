@@ -36,7 +36,7 @@ class Create(Change):
 
     def __repr__(self, leader=''):
         source = self.new.source.id if self.new.source else ''
-        return f'Create {self.new} ({source})'
+        return f'Create {self.new!r} ({source})'
 
 
 class Update(Change):
@@ -59,8 +59,8 @@ class Update(Change):
     def __repr__(self, leader=''):
         source = self.new.source.id if self.new.source else ''
         return (
-            f'Update\n{leader}    {self.existing} ->\n'
-            f'{leader}    {self.new} ({source})'
+            f'Update\n{leader}    {self.existing!r} ->\n'
+            f'{leader}    {self.new!r} ({source})'
         )
 
 
@@ -80,4 +80,4 @@ class Delete(Change):
         }
 
     def __repr__(self, leader=''):
-        return f'Delete {self.existing}'
+        return f'Delete {self.existing!r}'

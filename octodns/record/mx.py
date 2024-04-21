@@ -108,7 +108,7 @@ class MxValue(EqualityTupleMixin, dict):
         return (self.preference, self.exchange)
 
     def __repr__(self):
-        return f"'{self.preference} {self.exchange}'"
+        return f'{self.preference} {self.exchange}'
 
 
 class MxRecord(ValuesMixin, Record):

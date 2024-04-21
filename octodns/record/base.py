@@ -361,12 +361,9 @@ class ValuesMixin(object):
         )
 
     def __repr__(self):
-        values = "', '".join([str(v) for v in self.values])
-        klass = self.__class__.__name__
-        octodns = ''
-        if self.octodns:
-            octodns = f', {self.octodns}'
-        return f"<{klass} {self._type} {self.ttl}, {self.decoded_fqdn}, ['{values}']{octodns}>"
+        cls = self.__class__.__name__
+        octodns = f', {self.octodns}' if self.octodns else ''
+        return f"<{cls} {self._type} {self.ttl}, {self.decoded_fqdn}, {self.values!r}{octodns}>"
 
 
 class ValueMixin(object):
@@ -407,8 +404,6 @@ class ValueMixin(object):
         return self.fqdn, self.ttl, self._type, [self.value.rdata_text]
 
     def __repr__(self):
-        klass = self.__class__.__name__
-        octodns = ''
-        if self.octodns:
-            octodns = f', {self.octodns}'
-        return f'<{klass} {self._type} {self.ttl}, {self.decoded_fqdn}, {self.value}{octodns}>'
+        cls = self.__class__.__name__
+        octodns = f', {self.octodns}' if self.octodns else ''
+        return f'<{cls} {self._type} {self.ttl}, {self.decoded_fqdn}, {self.value!r}{octodns}>'
