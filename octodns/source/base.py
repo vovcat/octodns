@@ -48,6 +48,8 @@ class BaseSource(object):
         )
 
     def supports(self, record):
+        if self.id in record.excluded: return True
+        if record.included and self.id not in record.included: return True
         return record._type in self.SUPPORTS
 
     def __repr__(self):
