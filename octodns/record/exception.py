@@ -13,7 +13,7 @@ class ValidationError(RecordException):
     @classmethod
     def build_message(cls, fqdn, reasons, context=None):
         reasons = '\n  - '.join(reasons)
-        msg = f'Invalid record "{idna_decode(fqdn)}"'
+        msg = f'Invalid record "{fqdn}"'
         if context:
             msg += f', {context}'
         msg += f'\n  - {reasons}'
