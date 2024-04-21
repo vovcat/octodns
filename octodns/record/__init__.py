@@ -28,6 +28,7 @@ from .svcb import SvcbRecord, SvcbValue
 from .tlsa import TlsaRecord, TlsaValue
 from .txt import TxtRecord, TxtValue
 from .urlfwd import UrlfwdRecord, UrlfwdValue
+from .wr import WrRecord, WrValue
 
 # quell warnings
 ARecord
@@ -84,3 +85,5 @@ UrlfwdValue
 ValidationError
 ValueMixin
 ValuesMixin
+WrRecord
+WrValue
