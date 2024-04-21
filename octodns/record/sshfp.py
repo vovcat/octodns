@@ -12,7 +12,7 @@ class SshfpValue(EqualityTupleMixin, dict):
     VALID_FINGERPRINT_TYPES = (1, 2)
 
     @classmethod
-    def parse_rdata_text(self, value):
+    def parse_rdata_text(cls, value):
         try:
             algorithm, fingerprint_type, fingerprint = value.split(' ')
         except ValueError:

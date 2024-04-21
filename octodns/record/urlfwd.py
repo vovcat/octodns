@@ -13,7 +13,7 @@ class UrlfwdValue(EqualityTupleMixin, dict):
     VALID_QUERY = (0, 1)
 
     @classmethod
-    def parse_rdata_text(self, value):
+    def parse_rdata_text(cls, value):
         try:
             path, target, code, masking, query = value.split(' ')
         except ValueError:

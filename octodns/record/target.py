@@ -9,7 +9,7 @@ from ..idna import idna_encode
 
 class _TargetValue(str):
     @classmethod
-    def parse_rdata_text(self, value):
+    def parse_rdata_text(cls, value):
         return value
 
     @classmethod

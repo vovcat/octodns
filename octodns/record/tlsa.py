@@ -9,7 +9,7 @@ from .rr import RrParseError
 
 class TlsaValue(EqualityTupleMixin, dict):
     @classmethod
-    def parse_rdata_text(self, value):
+    def parse_rdata_text(cls, value):
         try:
             (
                 certificate_usage,
