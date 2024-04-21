@@ -11,6 +11,7 @@ from importlib.metadata import version as module_version
 from json import dumps
 from logging import getLogger
 from sys import stdout
+import sys, os
 
 from . import __version__
 from .deprecation import deprecated
@@ -98,9 +99,8 @@ class Manager(object):
         enable_checksum=False,
     ):
         version = self._try_version('octodns', version=__version__)
-        self.log.info(
-            '__init__: config_file=%s, (octoDNS %s)', config_file, version
-        )
+        self.log.info('__init__: config_file=%s, (octoDNS %s)', config_file, version)
+        self.log.debug('__init__: sys.path=%s, (cwd %s)', sys.path, os.getcwd())
 
         self._configured_sub_zones = None
 
@@ -392,7 +392,7 @@ class Manager(object):
             module, version = self._import_module(module_name)
         except (ImportError, ValueError):
             self.log.exception(
-                '_get_{}_class: Unable to import module %s', _class
+                '_get_{}_class: Unable to import module %s (sys.path=%s)', _class, sys.path
             )
             raise ManagerException(
                 f'Unknown {_type} class: {_class}, {context}'
@@ -610,7 +610,7 @@ class Manager(object):
                             zone_name,
                         )
                         continue
-                    self.log.info('sync:     adding dynamic zone=%s', zone_name)
+                    self.log.debug('sync:     adding dynamic zone=%s', zone_name)
                     zones[zone_name] = config
 
             # remove the dynamic config element so we don't try and populate it
@@ -639,7 +639,6 @@ class Manager(object):
         )
 
         zones = self.config['zones']
-
         zones = self._preprocess_zones(zones, eligible_sources)
 
         if eligible_zones:
@@ -788,7 +787,7 @@ class Manager(object):
             except KeyError:
                 raise ManagerException(
                     f'Zone {idna_decode(zone_name)} cannot be synced '
-                    f'without zone {zone_source} sinced '
+                    f'without zone {zone_source} synced, '
                     'it is aliased'
                 )
             futures.append(

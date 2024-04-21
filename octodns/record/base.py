@@ -161,11 +161,13 @@ class Record(EqualityTupleMixin):
             self.decoded_name = idna_decode(self.name)
         else:
             self.name = self.decoded_name = name
+
         self.log.debug(
-            '__init__: zone.name=%s, type=%11s, name=%s',
+            '__init__: zone=%s, type=%11s, name="%s", data=%s',
             zone.decoded_name,
             self.__class__.__name__,
             self.decoded_name,
+            data
         )
         self.source = source
         self.context = context
