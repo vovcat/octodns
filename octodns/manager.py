@@ -490,7 +490,7 @@ class Manager(object):
         desired=None,
         lenient=False,
     ):
-        zone = self.get_zone(zone_name)
+        zone = self.get_zone(zone_name, sources)
         self.log.debug(
             'sync:   populating, zone=%s, lenient=%s',
             zone.decoded_name,
@@ -872,11 +872,11 @@ class Manager(object):
         except KeyError as e:
             raise ManagerException(f'Unknown source: {e.args[0]}')
 
-        za = self.get_zone(zone)
+        za = self.get_zone(zone, a)
         for source in a:
             source.populate(za)
 
-        zb = self.get_zone(zone)
+        zb = self.get_zone(zone, b)
         for source in b:
             source.populate(zb)
 
@@ -963,7 +963,7 @@ class Manager(object):
             zones = [zone]
 
         for zone in zones:
-            zone = self.get_zone(zone)
+            zone = self.get_zone(zone, sources)
             for source in sources:
                 source.populate(zone, lenient=lenient)
 
@@ -980,7 +980,27 @@ class Manager(object):
 
         for zone_name, config in zones.items():
             decoded_zone_name = idna_decode(zone_name)
-            zone = self.get_zone(zone_name)
+            try:
+                sources = config['sources']
+            except KeyError:
+                raise ManagerException(
+                    f'Zone {decoded_zone_name} is missing sources'
+                )
+
+            try:
+                # rather than using a list comprehension, we break this
+                # loop out so that the `except` block below can reference
+                # the `source`
+                collected = []
+                for source in sources:
+                    collected.append(self.providers[source])
+                sources = collected
+            except KeyError:
+                raise ManagerException(
+                    f'Zone {decoded_zone_name}, unknown source: ' + source
+                )
+
+            zone = self.get_zone(zone_name, sources)
 
             source_zone = config.get('alias')
             if source_zone:
@@ -1005,25 +1025,6 @@ class Manager(object):
                 source_zone = source_zone
                 continue
 
-            try:
-                sources = config['sources']
-            except KeyError:
-                raise ManagerException(
-                    f'Zone {decoded_zone_name} is missing sources'
-                )
-
-            try:
-                # rather than using a list comprehension, we break this
-                # loop out so that the `except` block below can reference
-                # the `source`
-                collected = []
-                for source in sources:
-                    collected.append(self.providers[source])
-                sources = collected
-            except KeyError:
-                raise ManagerException(
-                    f'Zone {decoded_zone_name}, unknown source: ' + source
-                )
 
             lenient = lenient or config.get('lenient', False)
             for source in sources:
@@ -1042,13 +1043,16 @@ class Manager(object):
                     f'processor: {processor}'
                 )
 
-    def get_zone(self, zone_name):
+    def get_zone(self, zone_name, sources):
         if not zone_name[-1] == '.':
             raise ManagerException(
                 f'Invalid zone name {idna_decode(zone_name)}, missing ending dot'
             )
 
-        zone = self.config['zones'].get(zone_name)
+        zones = self.config['zones']
+        zones = self._preprocess_zones(zones, sources=sources)
+
+        zone = zones.get(zone_name)
         if zone is not None:
             sub_zones = self.configured_sub_zones(zone_name)
             update_pcent_threshold = zone.get("update_pcent_threshold", None)
