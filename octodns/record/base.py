@@ -131,7 +131,7 @@ class Record(EqualityTupleMixin):
         records = []
         # walk the grouped rrs converting each one to data and then create a
         # record with that data
-        for _, rrs in sorted(grouped.items()):
+        for _, rrs in grouped.items():
             rr = rrs[0]
             name = zone.hostname_from_fqdn(rr.name)
             _class = cls._CLASSES[rr._type]
@@ -317,7 +317,7 @@ class ValuesMixin(object):
 
         values = data.get('values', data.get('value', []))
         values = values if isinstance(values, (list, tuple)) else [values]
-        self.values = sorted(self._value_type.process(values))
+        self.values = self._value_type.process(values)
 
     def changes(self, other, target):
         if self.values != other.values:
