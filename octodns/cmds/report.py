@@ -65,7 +65,7 @@ def main():
     except KeyError as e:
         raise Exception(f'Unknown source: {e.args[0]}')
 
-    zone = manager.get_zone(args.zone)
+    zone = manager.get_zone(args.zone, sources)
     for source in sources:
         source.populate(zone, lenient=args.lenient)
 
