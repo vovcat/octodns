@@ -4,6 +4,7 @@
 
 from collections.abc import MutableMapping
 
+import idna
 from idna import IDNAError as _IDNAError
 from idna import decode as _decode
 from idna import encode as _encode
@@ -12,6 +13,14 @@ from idna import encode as _encode
 # generally right before they pass names off to api calls. For an example of
 # usage see https://github.com/octodns/octodns-ns1/pull/20
 
+# Fix for "octodns.idna.IdnaError: Codepoint U+005F at position 1 of '_domainkey' not allowed"
+# $ python -c 'from octodns.idna import idna_decode; print(idna_decode("_domainkey.example.xn--p1ai."));'
+# $ python -c 'from idna import decode; print(decode("_domainkey.example.xn--p1ai."));'
+# idna.core.InvalidCodepoint: Codepoint U+005F at position 1 of '_domainkey' not allowed
+# (from https://github.com/kjd/idna/issues/50)
+idna.idnadata.codepoint_classes['PVALID'] = tuple(
+    sorted(list(idna.idnadata.codepoint_classes['PVALID']) + [0x5f0000005f])
+)
 
 class IdnaError(Exception):
     def __init__(self, idna_error):
