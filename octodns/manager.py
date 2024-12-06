@@ -565,7 +565,7 @@ class Manager(object):
         ]:
             return None
 
-        self.log.info('sync:     sources=%s', sources)
+        self.log.info('sync:   _get_sources sources=%s', sources)
 
         try:
             # rather than using a list comprehension, we break this loop
