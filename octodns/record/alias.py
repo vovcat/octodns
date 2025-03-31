@@ -17,8 +17,6 @@ class AliasRecord(ValueMixin, Record):
     @classmethod
     def validate(cls, name, fqdn, data):
         reasons = []
-        if name != '':
-            reasons.append('non-root ALIAS not allowed')
         reasons.extend(super().validate(name, fqdn, data))
         return reasons
 
